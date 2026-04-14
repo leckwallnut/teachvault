@@ -1,0 +1,43 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Source+Sans+3:ital,wght@0,300..900;1,300..900&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-bg: #1a1f25;
+  --color-bg-light: #2c333b;
+  --color-surface: #373f49;
+  --color-surface-hover: #404a55;
+  --color-primary: #24ada5;
+  --color-primary-light: #3ec8be;
+  --color-secondary: #537098;
+  --color-text: #ebedef;
+  --color-text-muted: #818c99;
+  --color-border: #404a55;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: "Source Sans 3", system-ui, sans-serif;
+}
+
+::selection {
+  background-color: rgba(36, 173, 165, 0.3);
+}
+
+/* Smooth scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-surface-hover);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-muted);
+}
