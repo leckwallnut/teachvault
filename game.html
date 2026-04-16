@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Game — TeachVault</title>
+<meta name="description" content="Game template details, pedagogy notes, and AI customisation prompt.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Manrope:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+:root {
+  --color-bg:           #f9f3e6;
+  --color-surface:      #daccba;
+  --color-surface-alt:  #e6eef2;
+  --color-text:         #272320;
+  --color-text-muted:   #67676a;
+  --color-accent-warm:  #b59883;
+  --color-blue-primary: #5f7c8a;
+  --color-blue-soft:    #8fa7b3;
+  --color-blue-deep:    #2f3e46;
+  --color-blue-light:   #e6eef2;
+  --color-gold:         #f2c66d;
+
+  --font-display: 'Fraunces', serif;
+  --font-body: 'Manrope', sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 22px;
+  --shadow-sm: 0 2px 8px rgba(39, 35, 32, 0.06);
+  --shadow-md: 0 8px 24px rgba(39, 35, 32, 0.08);
+  --shadow-lg: 0 18px 48px rgba(39, 35, 32, 0.12);
+  --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-body);
+  background: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+/* NAVBAR */
+.navbar {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(249, 243, 230, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(218, 204, 186, 0.5);
+}
+.nav-inner {
+  max-width: 1280px; margin: 0 auto; padding: 18px 32px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.logo {
+  display: flex; align-items: center; gap: 10px;
+  font-family: var(--font-display); font-weight: 700; font-size: 1.35rem;
+  color: var(--color-blue-deep); letter-spacing: -0.01em;
+  transition: transform var(--transition);
+}
+.logo:hover { transform: translateY(-1px); }
+.logo-icon {
+  width: 34px; height: 34px; display: grid; place-items: center;
+  background: var(--color-blue-deep); color: var(--color-gold);
+  border-radius: var(--radius-sm);
+}
+.logo-icon svg { width: 20px; height: 20px; }
+.nav-links { display: flex; align-items: center; gap: 28px; }
+.nav-link {
+  font-weight: 500; font-size: 0.95rem; padding: 10px 18px;
+  border-radius: var(--radius-sm);
+  transition: background var(--transition), color var(--transition);
+}
+.nav-link:hover { background: var(--color-surface); color: var(--color-blue-deep); }
+.nav-link.primary { background: var(--color-blue-deep); color: var(--color-bg); }
+.nav-link.primary:hover { background: var(--color-blue-primary); color: var(--color-bg); }
+
+/* BREADCRUMB */
+.breadcrumb-bar {
+  max-width: 1280px; margin: 0 auto;
+  padding: 28px 32px 0;
+}
+.breadcrumb {
+  display: flex; gap: 8px; align-items: center;
+  font-size: 0.85rem; color: var(--color-text-muted);
+}
+.breadcrumb a { color: var(--color-text-muted); transition: color var(--transition); }
+.breadcrumb a:hover { color: var(--color-blue-primary); }
+.breadcrumb svg { width: 12px; height: 12px; }
+
+/* GAME HERO */
+.game-hero {
+  max-width: 1280px; margin: 0 auto;
+  padding: 40px 32px 60px;
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 64px;
+  align-items: start;
+}
+.hero-meta {
+  font-size: 0.82rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.15em;
+  color: var(--color-blue-primary);
+  margin-bottom: 16px;
+}
+.game-title {
+  font-size: clamp(2.4rem, 5vw, 3.6rem);
+  font-weight: 500;
+  margin-bottom: 20px;
+}
+.game-tags {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  margin-bottom: 28px;
+}
+.tag {
+  font-size: 0.78rem; font-weight: 500;
+  padding: 6px 12px; border-radius: 999px;
+  background: var(--color-surface-alt);
+  color: var(--color-blue-deep);
+  letter-spacing: 0.02em;
+}
+.tag.level { background: rgba(95, 124, 138, 0.15); color: var(--color-blue-deep); }
+.tag.type { background: rgba(181, 152, 131, 0.2); color: var(--color-text); }
+
+.game-desc {
+  font-size: 1.15rem;
+  color: var(--color-text);
+  line-height: 1.7;
+  max-width: 640px;
+}
+
+/* LAUNCH PANEL (sticky) */
+.launch-panel {
+  position: sticky; top: 100px;
+  background: var(--color-bg);
+  border: 1px solid var(--color-surface);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+}
+.launch-thumb {
+  aspect-ratio: 4 / 3;
+  display: grid; place-items: center;
+  font-size: 6rem;
+  color: var(--color-bg);
+  position: relative;
+}
+.launch-thumb::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(circle at 30% 20%, rgba(255,255,255,0.18), transparent 60%);
+}
+.launch-body { padding: 24px; }
+.launch-label {
+  font-size: 0.75rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.18em;
+  color: var(--color-text-muted);
+  margin-bottom: 6px;
+}
+.launch-title {
+  font-family: var(--font-display);
+  font-size: 1.35rem; font-weight: 600;
+  margin-bottom: 16px;
+}
+.launch-btn {
+  width: 100%;
+  display: inline-flex;
+  align-items: center; justify-content: center;
+  gap: 10px;
+  padding: 16px 20px;
+  background: var(--color-blue-deep);
+  color: var(--color-bg);
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  font-size: 1rem;
+  transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+.launch-btn::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(circle at center, rgba(242, 198, 109, 0.25), transparent 65%);
+  opacity: 0;
+  transition: opacity var(--transition);
+}
+.launch-btn:hover {
+  background: var(--color-blue-primary);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(47, 62, 70, 0.25), 0 0 0 1px var(--color-gold);
+}
+.launch-btn:hover::before { opacity: 1; }
+.launch-btn svg { width: 18px; height: 18px; position: relative; }
+
+.launch-note {
+  display: flex; align-items: center; gap: 8px;
+  margin-top: 14px;
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  text-align: center;
+  justify-content: center;
+}
+.launch-note svg { width: 13px; height: 13px; }
+
+/* SECTION */
+.section {
+  max-width: 1280px; margin: 0 auto;
+  padding: 60px 32px;
+}
+.section-title {
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+.section-title em { font-style: italic; color: var(--color-blue-primary); font-weight: 400; }
+.section-sub {
+  color: var(--color-text-muted);
+  margin-bottom: 36px;
+  font-size: 1.02rem;
+}
+
+/* INSTRUCTIONAL VIDEO */
+.video-placeholder {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: var(--color-blue-deep);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  display: grid; place-items: center;
+  color: var(--color-blue-soft);
+  text-align: center;
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+.video-placeholder::before {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(242, 198, 109, 0.08), transparent 70%);
+  pointer-events: none;
+}
+.video-placeholder-content { position: relative; max-width: 400px; padding: 32px; }
+.video-placeholder .play-icon {
+  width: 72px; height: 72px;
+  background: rgba(242, 198, 109, 0.12);
+  color: var(--color-gold);
+  border-radius: 50%;
+  display: grid; place-items: center;
+  margin: 0 auto 20px;
+  border: 1px solid rgba(242, 198, 109, 0.2);
+}
+.video-placeholder .play-icon svg { width: 28px; height: 28px; margin-left: 4px; }
+.video-placeholder h4 {
+  color: var(--color-bg);
+  font-size: 1.3rem;
+  margin-bottom: 8px;
+}
+.video-placeholder p {
+  font-size: 0.95rem;
+  color: var(--color-blue-soft);
+}
+
+/* PEDAGOGY GRID */
+.pedagogy-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+.pedagogy-card {
+  background: var(--color-bg);
+  border: 1px solid var(--color-surface);
+  border-radius: var(--radius-md);
+  padding: 28px;
+  transition: border-color var(--transition), transform var(--transition), box-shadow var(--transition);
+}
+.pedagogy-card:hover {
+  border-color: var(--color-accent-warm);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+.pedagogy-icon {
+  width: 44px; height: 44px;
+  display: grid; place-items: center;
+  background: var(--color-surface-alt);
+  color: var(--color-blue-deep);
+  border-radius: var(--radius-sm);
+  margin-bottom: 18px;
+}
+.pedagogy-icon svg { width: 22px; height: 22px; }
+.pedagogy-card h4 {
+  font-size: 1.1rem;
+  margin-bottom: 8px;
+}
+.pedagogy-card p {
+  color: var(--color-text-muted);
+  font-size: 0.95rem;
+  line-height: 1.65;
+}
+
+/* AI CUSTOMISATION (dark code box) */
+.ai-section {
+  background: var(--color-blue-deep);
+  border-radius: var(--radius-lg);
+  padding: 48px;
+  color: var(--color-bg);
+  position: relative;
+  overflow: hidden;
+}
+.ai-section::before {
+  content: '';
+  position: absolute;
+  top: -60px; right: -60px;
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, rgba(242, 198, 109, 0.08), transparent 70%);
+  pointer-events: none;
+}
+.ai-section .section-title { color: var(--color-bg); }
+.ai-section .section-title em { color: var(--color-gold); }
+.ai-section .section-sub { color: var(--color-blue-soft); }
+
+.code-box {
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  position: relative;
+  margin-bottom: 28px;
+}
+.code-box-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 18px;
+  background: rgba(0, 0, 0, 0.2);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+.code-box-label {
+  font-size: 0.78rem;
+  color: var(--color-blue-soft);
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  display: flex; align-items: center; gap: 8px;
+}
+.code-box-label::before {
+  content: '';
+  width: 8px; height: 8px;
+  background: var(--color-gold);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--color-gold);
+}
+.copy-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 12px;
+  background: rgba(242, 198, 109, 0.12);
+  color: var(--color-gold);
+  border: 1px solid rgba(242, 198, 109, 0.25);
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+  font-weight: 600;
+  font-family: var(--font-body);
+  transition: all var(--transition);
+}
+.copy-btn:hover {
+  background: var(--color-gold);
+  color: var(--color-blue-deep);
+}
+.copy-btn svg { width: 14px; height: 14px; }
+.copy-btn.copied {
+  background: var(--color-gold);
+  color: var(--color-blue-deep);
+}
+
+.code-content {
+  padding: 22px 24px;
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
+  line-height: 1.7;
+  color: var(--color-bg);
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: 480px;
+  overflow-y: auto;
+}
+
+/* AI tool links */
+.ai-tools-label {
+  font-size: 0.85rem;
+  color: var(--color-blue-soft);
+  margin-bottom: 14px;
+  font-weight: 500;
+}
+.ai-tools {
+  display: flex; flex-wrap: wrap; gap: 10px;
+}
+.ai-tool-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--color-bg);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-sm);
+  font-weight: 500;
+  font-size: 0.9rem;
+  transition: all var(--transition);
+}
+.ai-tool-link:hover {
+  background: var(--color-gold);
+  color: var(--color-blue-deep);
+  border-color: var(--color-gold);
+  transform: translateY(-2px);
+}
+.ai-tool-link svg { width: 13px; height: 13px; opacity: 0.6; }
+.ai-tool-link:hover svg { opacity: 1; }
+
+/* NOT FOUND */
+.not-found {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 120px 32px;
+  text-align: center;
+}
+.not-found h1 {
+  font-size: 2.4rem;
+  margin-bottom: 14px;
+}
+.not-found p {
+  color: var(--color-text-muted);
+  margin-bottom: 28px;
+  font-size: 1.05rem;
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 26px;
+  background: var(--color-blue-deep);
+  color: var(--color-bg);
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: all var(--transition);
+}
+.btn:hover { background: var(--color-blue-primary); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.btn svg { width: 16px; height: 16px; }
+
+/* FOOTER */
+.footer {
+  background: var(--color-blue-deep);
+  color: var(--color-blue-soft);
+  padding: 56px 32px 32px;
+  margin-top: 60px;
+}
+.footer-inner {
+  max-width: 1280px; margin: 0 auto;
+  display: flex; flex-direction: column; gap: 32px;
+}
+.footer-top {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  flex-wrap: wrap; gap: 32px;
+}
+.footer .logo { color: var(--color-bg); }
+.footer .logo-icon { background: var(--color-gold); color: var(--color-blue-deep); }
+.footer-tagline { max-width: 320px; font-size: 0.95rem; line-height: 1.6; margin-top: 12px; }
+.footer-links { display: flex; gap: 32px; flex-wrap: wrap; }
+.footer-links a {
+  color: var(--color-blue-soft); font-size: 0.95rem;
+  transition: color var(--transition);
+}
+.footer-links a:hover { color: var(--color-gold); }
+.footer-bottom {
+  padding-top: 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 0.85rem; text-align: center;
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .game-hero {
+    grid-template-columns: 1fr;
+    gap: 40px;
+    padding: 32px 24px 48px;
+  }
+  .launch-panel { position: static; max-width: 480px; }
+  .section { padding: 48px 24px; }
+  .pedagogy-grid { grid-template-columns: 1fr; }
+  .ai-section { padding: 36px 28px; }
+  .nav-inner { padding: 16px 24px; }
+  .breadcrumb-bar { padding: 24px 24px 0; }
+}
+@media (max-width: 600px) {
+  .game-hero { padding: 24px 20px 40px; gap: 32px; }
+  .section { padding: 40px 20px; }
+  .ai-section { padding: 28px 20px; border-radius: var(--radius-md); }
+  .code-content { padding: 18px; font-size: 0.82rem; }
+  .pedagogy-card { padding: 22px; }
+  .nav-inner { padding: 14px 20px; }
+  .breadcrumb-bar { padding: 20px 20px 0; }
+  .launch-body { padding: 20px; }
+  .footer-top { flex-direction: column; }
+  .footer { padding: 40px 20px 24px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  html { scroll-behavior: auto; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar" aria-label="Primary navigation">
+  <div class="nav-inner">
+    <a href="index.html" class="logo" aria-label="TeachVault home">
+      <span class="logo-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="4" width="18" height="16" rx="2"></rect>
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M12 9v-1"></path><path d="M12 16v-1"></path>
+          <path d="M9 12h-1"></path><path d="M16 12h-1"></path>
+        </svg>
+      </span>
+      TeachVault
+    </a>
+    <div class="nav-links">
+      <a href="games.html" class="nav-link primary">All Games</a>
+    </div>
+  </div>
+</nav>
+
+<!-- BREADCRUMB -->
+<div class="breadcrumb-bar">
+  <nav class="breadcrumb" aria-label="Breadcrumb" id="breadcrumbNav">
+    <a href="index.html">Home</a>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg>
+    <a href="games.html">All Games</a>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg>
+    <span id="breadcrumbTitle">Loading…</span>
+  </nav>
+</div>
+
+<main id="gameContent"></main>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div>
+        <a href="index.html" class="logo">
+          <span class="logo-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="4" width="18" height="16" rx="2"></rect>
+              <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+          </span>
+          TeachVault
+        </a>
+        <p class="footer-tagline">The discovery and launch layer for interactive classroom games. Built by teachers, for teachers.</p>
+      </div>
+      <div class="footer-links">
+        <a href="index.html">Home</a>
+        <a href="games.html">All Games</a>
+      </div>
+    </div>
+    <div class="footer-bottom">© 2025 TeachVault. All rights reserved.</div>
+  </div>
+</footer>
+
+<script>
+/* ========================================================
+   GAMES DATA (mirrored from games.html)
+   Single source: if you add a game in games.html, add it here
+   too — or later refactor into a shared games.js file.
+======================================================== */
+var GAMES = [
+  {
+    slug: "survey-showdown",
+    title: "Survey Showdown",
+    shortDesc: "A team-based classroom game where students compete to name the most popular answers to survey questions. High energy, lots of speaking, and endlessly customisable.",
+    thumbnail: "🎯",
+    thumbBg: "linear-gradient(135deg, #2f3e46 0%, #5f7c8a 100%)",
+    launchUrl: "https://clxlsopp.gensparkspace.com/",
+    instructionalVideoUrl: "",
+    pedagogyNotes: "Best for communicative speaking practice and building class energy. Works well as a mid-unit review or end-of-unit celebration activity. Encourages negotiation, discussion, and peer interaction. Ideal for B1–B2 learners but adaptable to A2 with simpler topics.",
+    customisationPrompt: "You are an expert English language teacher creating a classroom survey game similar to Family Feud. I need you to generate survey questions and top answers for my class.\n\nClass details:\n- Topic/Theme: [YOUR TOPIC]\n- Student age: [AGE RANGE]\n- Proficiency level: [A1/A2/B1/B2/C1/C2]\n- Number of rounds: [NUMBER]\n- Answers per question: [5 or 8]\n\nFor each round, provide:\n1. A survey question (something many people could have an opinion on, related to the topic)\n2. The top answers ordered by popularity\n3. A point value for each answer (most popular = most points)\n\nFormat: ROUND [n]: [Question] then numbered answers with points. Make questions natural and conversational. The goal is to spark discussion and get students talking.",
+    tags: {
+      subjects: ["English", "General"],
+      levels: ["A2", "B1", "B2"],
+      types: ["Team Competition", "Speaking", "Vocabulary Review"]
+    },
+    featured: true,
+    status: "live"
+  },
+  {
+    slug: "vocab-blitz",
+    title: "Vocab Blitz",
+    shortDesc: "Fast-paced vocabulary drilling with timed rounds and a live leaderboard. Perfect for warm-ups, energisers, and end-of-lesson reviews.",
+    thumbnail: "⚡",
+    thumbBg: "linear-gradient(135deg, #b59883 0%, #f2c66d 100%)",
+    launchUrl: "",
+    instructionalVideoUrl: "",
+    pedagogyNotes: "Great for retrieval practice and spaced-repetition-style vocabulary consolidation. The time pressure builds automaticity with high-frequency words, which frees up cognitive load for more complex tasks later in the lesson.",
+    customisationPrompt: "You are a vocabulary game designer. Generate a vocabulary set for a fast-paced drilling game.\n\nClass details:\n- Topic: [YOUR TOPIC]\n- Level: [A1/A2/B1/B2]\n- Number of items: [NUMBER]\n\nFor each item, provide:\n1. The target word\n2. A short definition\n3. A simple example sentence\n\nKeep definitions short enough to fit on a flashcard.",
+    tags: {
+      subjects: ["English", "General"],
+      levels: ["A2", "B1"],
+      types: ["Vocabulary", "Individual"]
+    },
+    featured: false,
+    status: "coming-soon"
+  },
+  {
+    slug: "memory-match",
+    title: "Memory Match",
+    shortDesc: "A classic card-flip memory game with fully customisable word pairs. Pairs can be word–definition, word–translation, or word–image.",
+    thumbnail: "🧠",
+    thumbBg: "linear-gradient(135deg, #5f7c8a 0%, #8fa7b3 100%)",
+    launchUrl: "",
+    instructionalVideoUrl: "",
+    pedagogyNotes: "Supports dual-coding and visual-verbal association. Particularly effective for beginners building core vocabulary, and works well as a quiet, focused pair activity after high-energy whole-class games.",
+    customisationPrompt: "You are a language teaching assistant. Generate matching card pairs for a memory game.\n\nClass details:\n- Topic: [YOUR TOPIC]\n- Level: [A1/A2/B1]\n- Pair type: [word-definition / word-translation / word-image description]\n- Number of pairs: [NUMBER]\n\nOutput the pairs in two columns so each card is clear.",
+    tags: {
+      subjects: ["English", "General"],
+      levels: ["A1", "A2", "B1"],
+      types: ["Memory", "Vocabulary", "Individual"]
+    },
+    featured: false,
+    status: "coming-soon"
+  }
+];
+
+var AI_TOOLS = [
+  { name: "DeepSeek", url: "https://chat.deepseek.com/" },
+  { name: "Kimi",     url: "https://www.kimi.com/" },
+  { name: "Claude",   url: "https://claude.ai/" },
+  { name: "ChatGPT",  url: "https://chat.openai.com/" }
+];
+
+/* ========================================================
+   PEDAGOGY PILLARS — derived structure for 2x2 grid.
+   We break the pedagogyNotes sentence into 4 framed cards
+   + overall "notes" card so every game has a consistent layout.
+======================================================== */
+var PEDAGOGY_PILLARS = [
+  {
+    title: "Best use",
+    icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>',
+    key: "bestUse"
+  },
+  {
+    title: "Skills developed",
+    icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3 7h7l-5.5 4 2 7L12 16l-6.5 4 2-7L2 9h7z"></path></svg>',
+    key: "skills"
+  },
+  {
+    title: "Classroom placement",
+    icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>',
+    key: "placement"
+  },
+  {
+    title: "Teacher notes",
+    icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>',
+    key: "notes"
+  }
+];
+
+/* Default pedagogy content per slug — used to populate 2x2 grid.
+   Falls back to pedagogyNotes as the "notes" card for any game.
+*/
+var PEDAGOGY_CONTENT = {
+  "survey-showdown": {
+    bestUse: "Communicative speaking practice and end-of-unit celebration or mid-unit review.",
+    skills: "Negotiation, discussion, peer interaction, active listening, topical vocabulary.",
+    placement: "Works best as a warm-up energiser or as a closing game. Give teams 2–3 minutes per round.",
+    notes: "Ideal for B1–B2 learners. Scale down to A2 with simpler topics (food, weekends, school). Scale up for C1 with abstract themes (ethics, media, identity)."
+  },
+  "vocab-blitz": {
+    bestUse: "Retrieval practice and vocabulary consolidation — low-stakes, high-frequency.",
+    skills: "Automaticity with high-frequency words, spelling recognition, speed-reading.",
+    placement: "Short 3–5 minute bursts. Use as a lesson opener or between heavier tasks.",
+    notes: "The time pressure builds automaticity and frees up cognitive load for more complex tasks later."
+  },
+  "memory-match": {
+    bestUse: "Quiet, focused pair work after a high-energy whole-class activity.",
+    skills: "Visual-verbal association, core vocabulary building, short-term recall.",
+    placement: "Pair or small-group activity. Allow 8–12 minutes per set.",
+    notes: "Supports dual-coding. Especially effective for beginners. Pairs can be word–definition, word–translation, or word–image."
+  }
+};
+
+/* ========================================================
+   URL PARSING & RENDER
+======================================================== */
+function getSlug() {
+  var params = new URLSearchParams(window.location.search);
+  return params.get('slug') || '';
+}
+
+function findGame(slug) {
+  for (var i = 0; i < GAMES.length; i++) {
+    if (GAMES[i].slug === slug) return GAMES[i];
+  }
+  return null;
+}
+
+function escapeHtml(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+function renderNotFound() {
+  document.getElementById('breadcrumbTitle').textContent = 'Not found';
+  document.title = 'Game not found — TeachVault';
+  document.getElementById('gameContent').innerHTML =
+    '<div class="not-found">'
+    + '<h1>Game not found</h1>'
+    + '<p>We couldn\'t find a game matching that link. It may have been moved or is not yet live.</p>'
+    + '<a href="games.html" class="btn">Browse all games <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="M12 5l7 7-7 7"></path></svg></a>'
+    + '</div>';
+}
+
+function renderGame(game) {
+  // Breadcrumb + title
+  document.title = game.title + ' — TeachVault';
+  document.getElementById('breadcrumbTitle').textContent = game.title;
+
+  // Tags
+  var subjectTags = game.tags.subjects.map(function(t){ return '<span class="tag">'+escapeHtml(t)+'</span>'; }).join('');
+  var levelTags   = game.tags.levels.map(function(t){ return '<span class="tag level">'+escapeHtml(t)+'</span>'; }).join('');
+  var typeTags    = game.tags.types.map(function(t){ return '<span class="tag type">'+escapeHtml(t)+'</span>'; }).join('');
+
+  var isLive = game.status === 'live' && !!game.launchUrl;
+  var launchBtnHtml = isLive
+    ? '<a class="launch-btn" href="'+escapeHtml(game.launchUrl)+'" target="_blank" rel="noopener noreferrer">'
+      + 'Launch Game'
+      + '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7"></path><path d="M7 7h10v10"></path></svg>'
+      + '</a>'
+      + '<div class="launch-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"></path><path d="M10 14L21 3"></path><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path></svg> Opens in a new tab</div>'
+    : '<button class="launch-btn" type="button" disabled style="opacity:0.55;cursor:not-allowed;">Coming soon</button>'
+      + '<div class="launch-note">This template is in development.</div>';
+
+  // Pedagogy 2x2
+  var content = PEDAGOGY_CONTENT[game.slug] || {
+    bestUse: "—",
+    skills: "—",
+    placement: "—",
+    notes: game.pedagogyNotes || "—"
+  };
+  var pedagogyCards = PEDAGOGY_PILLARS.map(function(p){
+    return '<div class="pedagogy-card">'
+      + '<div class="pedagogy-icon" aria-hidden="true">'+p.icon+'</div>'
+      + '<h4>'+p.title+'</h4>'
+      + '<p>'+escapeHtml(content[p.key] || '—')+'</p>'
+      + '</div>';
+  }).join('');
+
+  // Instructional video
+  var videoBlock;
+  if (game.instructionalVideoUrl) {
+    videoBlock = '<div class="video-placeholder" style="padding:0;">'
+      + '<iframe src="'+escapeHtml(game.instructionalVideoUrl)+'" style="width:100%;height:100%;border:0;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>'
+      + '</div>';
+  } else {
+    videoBlock = '<div class="video-placeholder">'
+      + '<div class="video-placeholder-content">'
+      + '<div class="play-icon"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20 6 4"></polygon></svg></div>'
+      + '<h4>Instructional video coming soon</h4>'
+      + '<p>A walkthrough showing how to run this game in your classroom will be posted here.</p>'
+      + '</div></div>';
+  }
+
+  // AI tool links
+  var aiToolsHtml = AI_TOOLS.map(function(t){
+    return '<a class="ai-tool-link" href="'+t.url+'" target="_blank" rel="noopener noreferrer">'
+      + escapeHtml(t.name)
+      + '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"></path><path d="M10 14L21 3"></path><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path></svg>'
+      + '</a>';
+  }).join('');
+
+  var html = ''
+    // HERO
+    + '<section class="game-hero">'
+    + '<div>'
+    +   '<div class="hero-meta">Classroom game template</div>'
+    +   '<h1 class="game-title">'+escapeHtml(game.title)+'</h1>'
+    +   '<div class="game-tags">'+subjectTags+levelTags+typeTags+'</div>'
+    +   '<p class="game-desc">'+escapeHtml(game.shortDesc)+'</p>'
+    + '</div>'
+    + '<aside class="launch-panel" aria-label="Launch game">'
+    +   '<div class="launch-thumb" style="background:'+game.thumbBg+'"><span>'+game.thumbnail+'</span></div>'
+    +   '<div class="launch-body">'
+    +     '<div class="launch-label">Ready to play</div>'
+    +     '<div class="launch-title">'+escapeHtml(game.title)+'</div>'
+    +     launchBtnHtml
+    +   '</div>'
+    + '</aside>'
+    + '</section>'
+
+    // INSTRUCTIONAL VIDEO
+    + '<section class="section">'
+    +   '<h2 class="section-title">How to <em>run it</em></h2>'
+    +   '<p class="section-sub">A short walkthrough of the setup, flow, and timing for this game.</p>'
+    +   videoBlock
+    + '</section>'
+
+    // PEDAGOGY
+    + '<section class="section">'
+    +   '<h2 class="section-title">Pedagogy <em>notes</em></h2>'
+    +   '<p class="section-sub">Why it works, when to use it, and what to watch out for.</p>'
+    +   '<div class="pedagogy-grid">'+pedagogyCards+'</div>'
+    + '</section>'
+
+    // AI CUSTOMISATION
+    + '<section class="section">'
+    +   '<div class="ai-section">'
+    +     '<h2 class="section-title">Customise with <em>AI</em></h2>'
+    +     '<p class="section-sub">Copy the prompt below, paste it into your favourite AI tool, fill in the bracketed fields, and get game content tailored to your class.</p>'
+    +     '<div class="code-box">'
+    +       '<div class="code-box-header">'
+    +         '<span class="code-box-label">prompt.txt</span>'
+    +         '<button class="copy-btn" id="copyPromptBtn" type="button">'
+    +           '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>'
+    +           '<span>Copy</span>'
+    +         '</button>'
+    +       '</div>'
+    +       '<pre class="code-content" id="promptText">'+escapeHtml(game.customisationPrompt)+'</pre>'
+    +     '</div>'
+    +     '<div class="ai-tools-label">Open in your preferred AI tool:</div>'
+    +     '<div class="ai-tools">'+aiToolsHtml+'</div>'
+    +   '</div>'
+    + '</section>';
+
+  document.getElementById('gameContent').innerHTML = html;
+
+  // Wire up copy button
+  var copyBtn = document.getElementById('copyPromptBtn');
+  copyBtn.addEventListener('click', function() {
+    var text = game.customisationPrompt;
+    var onDone = function() {
+      copyBtn.classList.add('copied');
+      copyBtn.querySelector('span').textContent = 'Copied!';
+      setTimeout(function(){
+        copyBtn.classList.remove('copied');
+        copyBtn.querySelector('span').textContent = 'Copy';
+      }, 1800);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(onDone).catch(function(){
+        fallbackCopy(text); onDone();
+      });
+    } else {
+      fallbackCopy(text); onDone();
+    }
+  });
+}
+
+function fallbackCopy(text) {
+  var ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed';
+  ta.style.left = '-9999px';
+  document.body.appendChild(ta);
+  ta.select();
+  try { document.execCommand('copy'); } catch(e) {}
+  document.body.removeChild(ta);
+}
+
+/* ========================================================
+   BOOT
+======================================================== */
+(function init() {
+  var slug = getSlug();
+  var game = findGame(slug);
+  if (!game) { renderNotFound(); return; }
+  renderGame(game);
+})();
+</script>
+</body>
+</html>
