@@ -642,6 +642,24 @@ var GAMES = [
     },
     featured: false,
     status: "coming-soon"
+  },
+  {
+    slug: "map-it",
+    title: "Map It!",
+    shortDesc: "A pair-work information gap game where students give and follow directions on a custom town map. One student navigates, the other draws the route.",
+    thumbnail: "🗺️",
+    thumbBg: "linear-gradient(135deg, #b59883 0%, #5f7c8a 100%)",
+    launchUrl: "map-it.html",
+    instructionalVideoUrl: "",
+    pedagogyNotes: "Targets giving and following directions, spatial vocabulary (north, south, turn left, go straight, opposite, between, next to), and question formation (Is the park near the school?). The information gap creates genuine communicative need. Works best when students sit back-to-back or screens are angled away from each other.",
+    customisationPrompt: "You are an ESL game designer creating a map-based directions game.\n\nClass details:\n- Topic: [YOUR TOPIC — e.g., city places, school, neighborhood, fantasy kingdom]\n- Level: [A2/B1/B2/C1]\n- Number of landmarks: [4-8]\n- Language focus: [giving directions / prepositions of place / question formation]\n\nGenerate:\n1. A list of 8-10 landmark names appropriate for the topic and level\n2. A suggested map layout description (where landmarks are relative to each other)\n3. 3 example routes (sequences of 4-5 landmarks) with step-by-step directions in natural English\n4. 5 useful sentence starters for giving directions at this level\n\nMake the directions natural and conversational. Include turns, landmarks as reference points, and approximate distances (about 2 blocks, at the corner, etc.).",
+    tags: {
+      subjects: ["English", "General"],
+      levels: ["B1", "B2", "C1"],
+      types: ["Pair Work", "Speaking", "Listening", "Vocabulary"]
+    },
+    featured: true,
+    status: "live"
   }
 ];
 
@@ -701,6 +719,12 @@ var PEDAGOGY_CONTENT = {
     skills: "Visual-verbal association, core vocabulary building, short-term recall.",
     placement: "Pair or small-group activity. Allow 8–12 minutes per set.",
     notes: "Supports dual-coding. Especially effective for beginners. Pairs can be word–definition, word–translation, or word–image."
+  },
+  "map-it": {
+    bestUse: "Pair-work information gap practice for directions, landmarks, and prepositions of place.",
+    skills: "Giving directions, active listening, spatial vocabulary, repair questions, and route sequencing.",
+    placement: "Use after teaching city places or directions language. Run two rounds so both students guide and navigate.",
+    notes: "Works best when students sit back-to-back or angle screens away from each other. Encourage natural language such as turn left, go straight, opposite, between, next to, and about two blocks."
   }
 };
 

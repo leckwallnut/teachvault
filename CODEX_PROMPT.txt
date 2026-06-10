@@ -1,0 +1,75 @@
+You are building a new classroom game for TeachVault — a single-page interactive HTML game that follows the exact same architecture as the existing games in this repo.
+
+## THE GAME: "Map It!" (Information Gap Navigator)
+
+**Concept:** A pair-work ESL game where Student A sees a map with a route marked, and Student B must draw the same route by listening to Student A's directions. The game runs entirely in the browser — no server needed.
+
+**How it works:**
+1. The game displays a stylized town map (drawn with HTML5 Canvas — no external images needed) with 8-10 named landmarks (e.g., "School", "Park", "Library", "Hospital", "Supermarket", "Bus Station", "Cinema", "Restaurant", "Bank", "Post Office")
+2. A random route is generated connecting 4-5 landmarks in sequence
+3. PHASE 1 — "Study" (60 seconds): Both students look together. Student A's screen shows the route overlaid on the map (red dashed line with numbered stops). Student B's screen shows only the blank map with landmarks. They study the layout together.
+4. PHASE 2 — "Navigate" (120 seconds): Student A gives verbal directions ("Go north from the school, turn left at the park..."). Student B clicks landmarks in the correct order on their map to trace the route. A timer counts down.
+5. PHASE 3 — "Reveal": The correct route is shown. Student B's route is compared to the correct one. Score: 20 points per correct landmark in the correct position. Bonus 20 points for perfect match.
+6. PHASE 4 — "Swap": Roles reverse with a new random route. Student B gives directions, Student A draws.
+7. Final score screen with both rounds.
+
+**Technical requirements:**
+- Single HTML file: `map-it.html` in the repo root
+- ALL CSS and JS inline (no external dependencies except Google Fonts — use Fraunces + Manrope to match the existing design)
+- Match the EXACT design language of the existing game.html — same CSS variables, same color palette (--color-bg: #f9f3e6, --color-blue-deep: #2f3e46, --color-gold: #f2c66d, etc.), same border-radius, same shadows, same transitions
+- The map should be an HTML5 Canvas element with a charming hand-drawn style town map (draw roads, building icons, trees, a river — all procedurally with canvas drawing functions)
+- Landmarks should be clearly labeled text labels on the map
+- The route overlay should be a red dashed line connecting landmarks with numbered circles at each stop
+- Student B's drawing should be a blue line that follows their clicked landmarks
+- Responsive design — works on desktop and tablet
+- Include a "New Game" button that generates a fresh random map layout and route
+- Include a difficulty selector: Easy (4 landmarks, 90s), Medium (5 landmarks, 120s), Hard (6 landmarks, 150s)
+- Sound effects using Web Audio API (simple beeps — no audio files needed)
+
+## DATA INTEGRATION:
+
+After building the game, you MUST also integrate it into the TeachVault platform by updating these two files:
+
+### 1. games.html — Add to the GAMES array (after the last entry, before the closing `];`):
+```javascript
+{
+    slug: "map-it",
+    title: "Map It!",
+    shortDesc: "A pair-work information gap game where students give and follow directions on a custom town map. One student navigates, the other draws the route.",
+    thumbnail: "🗺️",
+    thumbBg: "linear-gradient(135deg, #b59883 0%, #5f7c8a 100%)",
+    launchUrl: "map-it.html",
+    instructionalVideoUrl: "",
+    pedagogyNotes: "Targets giving and following directions, spatial vocabulary (north, south, turn left, go straight, opposite, between, next to), and question formation (Is the park near the school?). The information gap creates genuine communicative need. Works best when students sit back-to-back or screens are angled away from each other.",
+    customisationPrompt: "You are an ESL game designer creating a map-based directions game.\n\nClass details:\n- Topic: [YOUR TOPIC — e.g., city places, school, neighborhood, fantasy kingdom]\n- Level: [A2/B1/B2/C1]\n- Number of landmarks: [4-8]\n- Language focus: [giving directions / prepositions of place / question formation]\n\nGenerate:\n1. A list of 8-10 landmark names appropriate for the topic and level\n2. A suggested map layout description (where landmarks are relative to each other)\n3. 3 example routes (sequences of 4-5 landmarks) with step-by-step directions in natural English\n4. 5 useful sentence starters for giving directions at this level\n\nMake the directions natural and conversational. Include turns, landmarks as reference points, and approximate distances (about 2 blocks, at the corner, etc.).",
+    tags: {
+      subjects: ["English", "General"],
+      levels: ["B1", "B2", "C1"],
+      types: ["Pair Work", "Speaking", "Listening", "Vocabulary"]
+    },
+    featured: true,
+    status: "live"
+}
+```
+
+### 2. game.html — Add the same entry to its GAMES array (same data, plus instructionalVideoUrl field which is already in game.html format).
+
+### 3. index.html — Add to the FEATURED_GAMES array:
+```javascript
+{
+    slug: "map-it",
+    title: "Map It!",
+    shortDesc: "A pair-work information gap game where students give and follow directions on a custom town map.",
+    thumbnail: "🗺️",
+    thumbBg: "linear-gradient(135deg, #b59883 0%, #5f7c8a 100%)",
+    tags: ["Speaking", "B1–C1", "Pair Work"],
+    status: "live"
+}
+```
+
+## IMPORTANT:
+- Read the existing game.html, games.html, and index.html files FIRST to understand the exact patterns, CSS variable names, HTML structure, and data format before making any changes.
+- The game.html file has a PEDAGOGY_CONTENT object — add an entry for "map-it" with bestUse, skills, placement, and notes fields.
+- The game.html file has a PEDAGOGY_PILLARS array — do NOT modify this, just make sure the PEDAGOGY_CONTENT entry works with it.
+- Test that the game works by opening map-it.html in a browser context.
+- Make sure the game is genuinely fun and playable — smooth animations, clear visual feedback, satisfying interactions.

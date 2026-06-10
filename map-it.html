@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Map It! — TeachVault</title>
+<meta name="description" content="A pair-work information gap directions game for ESL classrooms.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Manrope:wght@300;400;500;600;700&display=swap">
+<style>
+:root {
+  --color-bg:           #f9f3e6;
+  --color-surface:      #daccba;
+  --color-surface-alt:  #e6eef2;
+  --color-text:         #272320;
+  --color-text-muted:   #67676a;
+  --color-accent-warm:  #b59883;
+  --color-blue-primary: #5f7c8a;
+  --color-blue-soft:    #8fa7b3;
+  --color-blue-deep:    #2f3e46;
+  --color-blue-light:   #e6eef2;
+  --color-gold:         #f2c66d;
+
+  --font-display: 'Fraunces', serif;
+  --font-body: 'Manrope', sans-serif;
+
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 22px;
+  --shadow-sm: 0 2px 8px rgba(39, 35, 32, 0.06);
+  --shadow-md: 0 8px 24px rgba(39, 35, 32, 0.08);
+  --shadow-lg: 0 18px 48px rgba(39, 35, 32, 0.12);
+  --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-body);
+  background: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; text-decoration: none; }
+button, select { font-family: inherit; }
+button { cursor: pointer; border: none; background: none; color: inherit; }
+h1, h2, h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+.navbar {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(249, 243, 230, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(218, 204, 186, 0.5);
+}
+.nav-inner {
+  max-width: 1280px; margin: 0 auto; padding: 18px 32px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.logo {
+  display: flex; align-items: center; gap: 10px;
+  font-family: var(--font-display); font-weight: 700; font-size: 1.35rem;
+  color: var(--color-blue-deep); letter-spacing: -0.01em;
+  transition: transform var(--transition);
+}
+.logo:hover { transform: translateY(-1px); }
+.logo-icon {
+  width: 34px; height: 34px; display: grid; place-items: center;
+  background: var(--color-blue-deep); color: var(--color-gold);
+  border-radius: var(--radius-sm);
+}
+.logo-icon svg { width: 20px; height: 20px; }
+.nav-links { display: flex; align-items: center; gap: 28px; }
+.nav-link {
+  font-weight: 500; font-size: 0.95rem; padding: 10px 18px;
+  border-radius: var(--radius-sm);
+  transition: background var(--transition), color var(--transition);
+}
+.nav-link:hover { background: var(--color-surface); color: var(--color-blue-deep); }
+.nav-link.primary { background: var(--color-blue-deep); color: var(--color-bg); }
+.nav-link.primary:hover { background: var(--color-blue-primary); color: var(--color-bg); }
+
+.app-shell {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 32px;
+}
+.game-header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 28px;
+  align-items: end;
+  margin-bottom: 24px;
+}
+.eyebrow {
+  font-size: 0.82rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.15em;
+  color: var(--color-blue-primary);
+  margin-bottom: 12px;
+}
+.game-title {
+  font-size: clamp(2.2rem, 5vw, 4rem);
+  font-weight: 500;
+  margin-bottom: 14px;
+}
+.game-title em { color: var(--color-blue-primary); font-style: italic; font-weight: 400; }
+.game-sub {
+  max-width: 760px;
+  color: var(--color-text-muted);
+  font-size: 1.05rem;
+}
+.control-panel {
+  min-width: 320px;
+  background: var(--color-bg);
+  border: 1px solid var(--color-surface);
+  border-radius: var(--radius-lg);
+  padding: 18px;
+  box-shadow: var(--shadow-md);
+}
+.control-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  align-items: end;
+}
+.field label {
+  display: block;
+  color: var(--color-text-muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 7px;
+}
+select {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid var(--color-surface);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-weight: 600;
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 12px 18px;
+  border-radius: var(--radius-sm);
+  font-weight: 700;
+  transition: transform var(--transition), background var(--transition), box-shadow var(--transition), color var(--transition);
+  white-space: nowrap;
+}
+.btn-primary { background: var(--color-blue-deep); color: var(--color-bg); }
+.btn-primary:hover { background: var(--color-blue-primary); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.btn-secondary { background: var(--color-surface-alt); color: var(--color-blue-deep); }
+.btn-secondary:hover { background: var(--color-surface); transform: translateY(-2px); }
+.btn-gold { background: var(--color-gold); color: var(--color-blue-deep); }
+.btn-gold:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.btn[disabled] { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+.status-strip {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 22px;
+}
+.status-card {
+  background: var(--color-bg);
+  border: 1px solid var(--color-surface);
+  border-radius: var(--radius-md);
+  padding: 16px 18px;
+  box-shadow: var(--shadow-sm);
+}
+.status-label {
+  color: var(--color-text-muted);
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+.status-value {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  color: var(--color-blue-deep);
+}
+.phase-panel {
+  background: var(--color-blue-deep);
+  color: var(--color-bg);
+  border-radius: var(--radius-lg);
+  padding: 22px 24px;
+  margin-bottom: 22px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 20px;
+  align-items: center;
+  box-shadow: var(--shadow-md);
+}
+.phase-panel h2 {
+  color: var(--color-bg);
+  font-size: 1.45rem;
+  margin-bottom: 7px;
+}
+.phase-copy {
+  color: var(--color-blue-soft);
+  max-width: 860px;
+}
+.phase-actions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
+.map-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
+  align-items: start;
+}
+.map-panel {
+  background: var(--color-bg);
+  border: 1px solid var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+}
+.panel-head {
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--color-surface);
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: center;
+}
+.panel-title {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  color: var(--color-blue-deep);
+}
+.role-pill {
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(95, 124, 138, 0.15);
+  color: var(--color-blue-deep);
+}
+.role-pill.guide { background: rgba(242, 198, 109, 0.35); }
+.canvas-wrap {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  background: #efe5d4;
+}
+canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.click-hint {
+  position: absolute;
+  left: 14px;
+  bottom: 14px;
+  right: 14px;
+  background: rgba(249, 243, 230, 0.88);
+  color: var(--color-blue-deep);
+  border: 1px solid rgba(218, 204, 186, 0.7);
+  border-radius: var(--radius-sm);
+  padding: 9px 11px;
+  font-size: 0.86rem;
+  font-weight: 700;
+  pointer-events: none;
+}
+.panel-footer {
+  padding: 16px 20px 20px;
+  min-height: 80px;
+}
+.route-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.route-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: var(--color-surface-alt);
+  color: var(--color-blue-deep);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+.route-chip .num {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--color-blue-primary);
+  color: var(--color-bg);
+  font-size: 0.74rem;
+}
+.route-chip.correct { background: rgba(242, 198, 109, 0.36); }
+.route-chip.wrong { background: rgba(181, 152, 131, 0.24); }
+.round-summary {
+  background: var(--color-bg);
+  border: 1px solid var(--color-surface);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  box-shadow: var(--shadow-md);
+  margin-top: 22px;
+  display: none;
+}
+.round-summary.show { display: block; }
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 18px;
+}
+.summary-box {
+  background: var(--color-surface-alt);
+  border-radius: var(--radius-md);
+  padding: 16px;
+}
+.summary-box strong {
+  display: block;
+  color: var(--color-blue-deep);
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  margin-bottom: 4px;
+}
+.summary-box span { color: var(--color-text-muted); font-size: 0.9rem; }
+.confetti {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  z-index: 200;
+}
+.confetti span {
+  position: absolute;
+  width: 9px;
+  height: 14px;
+  background: var(--color-gold);
+  top: -20px;
+  animation: fall 900ms ease-in forwards;
+}
+@keyframes fall {
+  to { transform: translateY(110vh) rotate(620deg); opacity: 0; }
+}
+@media (max-width: 1050px) {
+  .game-header { grid-template-columns: 1fr; }
+  .control-panel { min-width: 0; }
+  .status-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .map-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 640px) {
+  .app-shell { padding: 22px 18px; }
+  .nav-inner { padding: 14px 18px; }
+  .nav-links { gap: 10px; }
+  .nav-link { padding: 8px 10px; }
+  .control-row,
+  .phase-panel,
+  .summary-grid { grid-template-columns: 1fr; }
+  .phase-actions { justify-content: stretch; }
+  .phase-actions .btn { width: 100%; }
+  .status-strip { grid-template-columns: 1fr; }
+  .panel-head { align-items: flex-start; flex-direction: column; }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  html { scroll-behavior: auto; }
+}
+</style>
+</head>
+<body>
+<nav class="navbar" aria-label="Primary navigation">
+  <div class="nav-inner">
+    <a href="index.html" class="logo" aria-label="TeachVault home">
+      <span class="logo-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="4" width="18" height="16" rx="2"></rect>
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M12 9v-1"></path><path d="M12 16v-1"></path>
+          <path d="M9 12h-1"></path><path d="M16 12h-1"></path>
+        </svg>
+      </span>
+      TeachVault
+    </a>
+    <div class="nav-links">
+      <a href="games.html" class="nav-link">All Games</a>
+      <a href="game.html?slug=map-it" class="nav-link primary">Game Notes</a>
+    </div>
+  </div>
+</nav>
+
+<main class="app-shell">
+  <header class="game-header">
+    <div>
+      <div class="eyebrow">Information gap navigator</div>
+      <h1 class="game-title">Map <em>It!</em></h1>
+      <p class="game-sub">One student sees the route. The other listens, clicks the landmarks in order, and tries to recreate the journey through town.</p>
+    </div>
+    <aside class="control-panel" aria-label="Game controls">
+      <div class="control-row">
+        <div class="field">
+          <label for="difficulty">Difficulty</label>
+          <select id="difficulty">
+            <option value="easy">Easy · 4 stops · 90s</option>
+            <option value="medium" selected>Medium · 5 stops · 120s</option>
+            <option value="hard">Hard · 6 stops · 150s</option>
+          </select>
+        </div>
+        <button class="btn btn-primary" id="newGameBtn" type="button">New Game</button>
+      </div>
+    </aside>
+  </header>
+
+  <section class="status-strip" aria-label="Game status">
+    <div class="status-card">
+      <div class="status-label">Round</div>
+      <div class="status-value" id="roundValue">1 of 2</div>
+    </div>
+    <div class="status-card">
+      <div class="status-label">Phase</div>
+      <div class="status-value" id="phaseValue">Study</div>
+    </div>
+    <div class="status-card">
+      <div class="status-label">Timer</div>
+      <div class="status-value" id="timerValue">60</div>
+    </div>
+    <div class="status-card">
+      <div class="status-label">Score</div>
+      <div class="status-value" id="scoreValue">0</div>
+    </div>
+  </section>
+
+  <section class="phase-panel" aria-live="polite">
+    <div>
+      <h2 id="phaseTitle">Study the town together</h2>
+      <p class="phase-copy" id="phaseCopy">Student A can see the red route. Student B studies the same town without the route. Notice landmark positions before the speaking round begins.</p>
+    </div>
+    <div class="phase-actions">
+      <button class="btn btn-gold" id="primaryAction" type="button">Start Navigate</button>
+      <button class="btn btn-secondary" id="undoBtn" type="button">Undo</button>
+      <button class="btn btn-secondary" id="revealBtn" type="button">Reveal</button>
+    </div>
+  </section>
+
+  <section class="map-grid" aria-label="Student maps">
+    <article class="map-panel">
+      <div class="panel-head">
+        <div>
+          <div class="panel-title" id="leftTitle">Student A</div>
+          <div class="role-pill guide" id="leftRole">Guide · route visible</div>
+        </div>
+      </div>
+      <div class="canvas-wrap">
+        <canvas id="guideCanvas" width="960" height="720" aria-label="Guide map"></canvas>
+      </div>
+      <div class="panel-footer">
+        <div class="route-list" id="correctRouteList"></div>
+      </div>
+    </article>
+
+    <article class="map-panel">
+      <div class="panel-head">
+        <div>
+          <div class="panel-title" id="rightTitle">Student B</div>
+          <div class="role-pill" id="rightRole">Navigator · click route</div>
+        </div>
+      </div>
+      <div class="canvas-wrap">
+        <canvas id="playerCanvas" width="960" height="720" aria-label="Navigator map"></canvas>
+        <div class="click-hint" id="clickHint">Click landmarks during Navigate.</div>
+      </div>
+      <div class="panel-footer">
+        <div class="route-list" id="playerRouteList"></div>
+      </div>
+    </article>
+  </section>
+
+  <section class="round-summary" id="summaryPanel" aria-live="polite">
+    <h2 id="summaryTitle">Round complete</h2>
+    <p id="summaryCopy"></p>
+    <div class="summary-grid" id="summaryGrid"></div>
+  </section>
+</main>
+<div class="confetti" id="confetti" aria-hidden="true"></div>
+
+<script>
+var LANDMARK_NAMES = ["School", "Park", "Library", "Hospital", "Supermarket", "Bus Station", "Cinema", "Restaurant", "Bank", "Post Office"];
+var DIFFICULTIES = {
+  easy: { stops: 4, navigateSeconds: 90 },
+  medium: { stops: 5, navigateSeconds: 120 },
+  hard: { stops: 6, navigateSeconds: 150 }
+};
+var STUDY_SECONDS = 60;
+var W = 960;
+var H = 720;
+var state = {
+  difficulty: "medium",
+  round: 1,
+  phase: "study",
+  seconds: STUDY_SECONDS,
+  route: [],
+  playerRoute: [],
+  scores: [],
+  landmarks: [],
+  seed: 1,
+  activeTimer: null,
+  anim: 0
+};
+
+var els = {
+  difficulty: document.getElementById("difficulty"),
+  newGameBtn: document.getElementById("newGameBtn"),
+  primaryAction: document.getElementById("primaryAction"),
+  undoBtn: document.getElementById("undoBtn"),
+  revealBtn: document.getElementById("revealBtn"),
+  guideCanvas: document.getElementById("guideCanvas"),
+  playerCanvas: document.getElementById("playerCanvas"),
+  roundValue: document.getElementById("roundValue"),
+  phaseValue: document.getElementById("phaseValue"),
+  timerValue: document.getElementById("timerValue"),
+  scoreValue: document.getElementById("scoreValue"),
+  phaseTitle: document.getElementById("phaseTitle"),
+  phaseCopy: document.getElementById("phaseCopy"),
+  leftTitle: document.getElementById("leftTitle"),
+  rightTitle: document.getElementById("rightTitle"),
+  leftRole: document.getElementById("leftRole"),
+  rightRole: document.getElementById("rightRole"),
+  clickHint: document.getElementById("clickHint"),
+  correctRouteList: document.getElementById("correctRouteList"),
+  playerRouteList: document.getElementById("playerRouteList"),
+  summaryPanel: document.getElementById("summaryPanel"),
+  summaryTitle: document.getElementById("summaryTitle"),
+  summaryCopy: document.getElementById("summaryCopy"),
+  summaryGrid: document.getElementById("summaryGrid"),
+  confetti: document.getElementById("confetti")
+};
+
+var guideCtx = els.guideCanvas.getContext("2d");
+var playerCtx = els.playerCanvas.getContext("2d");
+var audioCtx = null;
+
+function randFactory(seed) {
+  return function() {
+    seed |= 0;
+    seed = seed + 0x6D2B79F5 | 0;
+    var t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+}
+function shuffle(arr, rand) {
+  var copy = arr.slice();
+  for (var i = copy.length - 1; i > 0; i--) {
+    var j = Math.floor(rand() * (i + 1));
+    var tmp = copy[i];
+    copy[i] = copy[j];
+    copy[j] = tmp;
+  }
+  return copy;
+}
+function beep(freq, duration, type) {
+  try {
+    audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+    var osc = audioCtx.createOscillator();
+    var gain = audioCtx.createGain();
+    osc.type = type || "sine";
+    osc.frequency.value = freq;
+    gain.gain.setValueAtTime(0.001, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.08, audioCtx.currentTime + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start();
+    osc.stop(audioCtx.currentTime + duration + 0.02);
+  } catch(e) {}
+}
+function generateLandmarks(seed) {
+  var rand = randFactory(seed);
+  var slots = [
+    { x: 150, y: 128 }, { x: 360, y: 104 }, { x: 622, y: 126 }, { x: 806, y: 168 },
+    { x: 188, y: 310 }, { x: 464, y: 286 }, { x: 732, y: 326 },
+    { x: 126, y: 544 }, { x: 430, y: 548 }, { x: 760, y: 528 }
+  ];
+  return slots.map(function(slot, i) {
+    return {
+      id: i,
+      name: LANDMARK_NAMES[i],
+      x: slot.x + Math.round((rand() - 0.5) * 46),
+      y: slot.y + Math.round((rand() - 0.5) * 42),
+      color: ["#f2c66d", "#8fa7b3", "#b59883", "#e6eef2", "#5f7c8a"][i % 5]
+    };
+  });
+}
+function generateRoute() {
+  var rand = randFactory(state.seed + state.round * 101);
+  var count = DIFFICULTIES[state.difficulty].stops;
+  var pool = shuffle(state.landmarks, rand);
+  var route = [pool[0]];
+  while (route.length < count) {
+    var candidates = pool.filter(function(lm) {
+      return route.indexOf(lm) === -1 && distance(route[route.length - 1], lm) > 190;
+    });
+    if (!candidates.length) {
+      candidates = pool.filter(function(lm) { return route.indexOf(lm) === -1; });
+    }
+    candidates.sort(function(a, b) {
+      return Math.abs(distance(route[route.length - 1], a) - 300) - Math.abs(distance(route[route.length - 1], b) - 300);
+    });
+    route.push(candidates[Math.floor(rand() * Math.min(3, candidates.length))]);
+  }
+  state.route = route;
+}
+function distance(a, b) {
+  var dx = a.x - b.x;
+  var dy = a.y - b.y;
+  return Math.sqrt(dx * dx + dy * dy);
+}
+function startNewGame() {
+  stopTimer();
+  state.difficulty = els.difficulty.value;
+  state.round = 1;
+  state.phase = "study";
+  state.seconds = STUDY_SECONDS;
+  state.playerRoute = [];
+  state.scores = [];
+  state.seed = Math.floor(Math.random() * 900000) + 1000;
+  state.landmarks = generateLandmarks(state.seed);
+  generateRoute();
+  els.summaryPanel.classList.remove("show");
+  startTimer();
+  update();
+  beep(440, 0.08, "triangle");
+}
+function prepareNextRound() {
+  state.round = 2;
+  state.phase = "study";
+  state.seconds = STUDY_SECONDS;
+  state.playerRoute = [];
+  state.seed += 17;
+  state.landmarks = generateLandmarks(state.seed);
+  generateRoute();
+  els.summaryPanel.classList.remove("show");
+  startTimer();
+  update();
+  beep(520, 0.09, "triangle");
+}
+function startTimer() {
+  stopTimer();
+  state.activeTimer = setInterval(function() {
+    state.seconds -= 1;
+    if (state.seconds <= 5 && state.seconds > 0) beep(620, 0.04, "sine");
+    if (state.seconds <= 0) {
+      if (state.phase === "study") {
+        beginNavigate();
+      } else if (state.phase === "navigate") {
+        revealRound();
+      }
+    }
+    updateStatus();
+  }, 1000);
+}
+function stopTimer() {
+  if (state.activeTimer) clearInterval(state.activeTimer);
+  state.activeTimer = null;
+}
+function beginNavigate() {
+  state.phase = "navigate";
+  state.seconds = DIFFICULTIES[state.difficulty].navigateSeconds;
+  state.playerRoute = [];
+  startTimer();
+  update();
+  beep(740, 0.08, "square");
+}
+function revealRound() {
+  if (state.phase === "final") return;
+  stopTimer();
+  state.phase = "reveal";
+  var score = calculateScore();
+  state.scores[state.round - 1] = score;
+  showSummary(score);
+  update();
+  if (score.perfect) {
+    confetti();
+    beep(880, 0.08, "triangle");
+    setTimeout(function(){ beep(1180, 0.12, "triangle"); }, 90);
+  } else {
+    beep(260, 0.12, "sawtooth");
+  }
+}
+function finishGame() {
+  stopTimer();
+  state.phase = "final";
+  showFinal();
+  update();
+  confetti();
+}
+function calculateScore() {
+  var correct = 0;
+  for (var i = 0; i < state.route.length; i++) {
+    if (state.playerRoute[i] && state.playerRoute[i].id === state.route[i].id) correct += 1;
+  }
+  var perfect = correct === state.route.length && state.playerRoute.length === state.route.length;
+  return { correct: correct, total: state.route.length, points: correct * 20 + (perfect ? 20 : 0), perfect: perfect };
+}
+function totalScore() {
+  return state.scores.reduce(function(sum, score) { return sum + (score ? score.points : 0); }, 0);
+}
+function update() {
+  updateStatus();
+  updateText();
+  renderLists();
+  drawAll();
+}
+function updateStatus() {
+  var phaseName = state.phase.charAt(0).toUpperCase() + state.phase.slice(1);
+  els.roundValue.textContent = state.phase === "final" ? "Done" : state.round + " of 2";
+  els.phaseValue.textContent = phaseName;
+  els.timerValue.textContent = state.phase === "reveal" || state.phase === "final" ? "--" : String(Math.max(0, state.seconds));
+  els.scoreValue.textContent = String(totalScore());
+}
+function updateText() {
+  var guideName = state.round === 1 ? "Student A" : "Student B";
+  var navName = state.round === 1 ? "Student B" : "Student A";
+  els.leftTitle.textContent = guideName;
+  els.rightTitle.textContent = navName;
+  if (state.phase === "study") {
+    els.phaseTitle.textContent = "Study the town together";
+    els.phaseCopy.textContent = guideName + " can see the red route. " + navName + " studies the blank map. Use this minute to remember where places are.";
+    els.primaryAction.textContent = "Start Navigate";
+    els.primaryAction.disabled = false;
+    els.undoBtn.disabled = true;
+    els.revealBtn.disabled = false;
+    els.clickHint.textContent = "Click landmarks during Navigate.";
+  } else if (state.phase === "navigate") {
+    els.phaseTitle.textContent = "Give directions, then draw";
+    els.phaseCopy.textContent = guideName + " gives spoken directions only. " + navName + " clicks each landmark in order to trace the blue route.";
+    els.primaryAction.textContent = "Finish & Reveal";
+    els.primaryAction.disabled = false;
+    els.undoBtn.disabled = state.playerRoute.length === 0;
+    els.revealBtn.disabled = false;
+    els.clickHint.textContent = "Click the landmarks in the order you hear them.";
+  } else if (state.phase === "reveal") {
+    els.phaseTitle.textContent = "Compare the routes";
+    els.phaseCopy.textContent = "The red route is correct. The blue route is the navigator's answer. Check the sequence and switch roles.";
+    els.primaryAction.textContent = state.round === 1 ? "Swap Roles" : "Final Score";
+    els.primaryAction.disabled = false;
+    els.undoBtn.disabled = true;
+    els.revealBtn.disabled = true;
+    els.clickHint.textContent = "Round complete.";
+  } else {
+    els.phaseTitle.textContent = "Final score";
+    els.phaseCopy.textContent = "Both students have guided and navigated. Start a new game for a fresh town route.";
+    els.primaryAction.textContent = "New Game";
+    els.primaryAction.disabled = false;
+    els.undoBtn.disabled = true;
+    els.revealBtn.disabled = true;
+    els.clickHint.textContent = "Game complete.";
+  }
+  els.leftRole.textContent = "Guide · route visible";
+  els.rightRole.textContent = "Navigator · click route";
+}
+function renderLists() {
+  els.correctRouteList.innerHTML = state.route.map(function(lm, i) {
+    var hidden = state.phase === "navigate" || state.phase === "study";
+    var label = hidden ? "Stop " + (i + 1) : lm.name;
+    return '<span class="route-chip"><span class="num">' + (i + 1) + '</span>' + label + '</span>';
+  }).join("");
+  els.playerRouteList.innerHTML = state.playerRoute.length
+    ? state.playerRoute.map(function(lm, i) {
+        var cls = state.phase === "reveal" ? (state.route[i] && state.route[i].id === lm.id ? " correct" : " wrong") : "";
+        return '<span class="route-chip' + cls + '"><span class="num">' + (i + 1) + '</span>' + lm.name + '</span>';
+      }).join("")
+    : '<span class="route-chip">No landmarks selected yet</span>';
+}
+function showSummary(score) {
+  els.summaryPanel.classList.add("show");
+  els.summaryTitle.textContent = "Round " + state.round + " complete";
+  els.summaryCopy.textContent = score.perfect
+    ? "Perfect route. Every landmark was clicked in the right order."
+    : "You matched " + score.correct + " of " + score.total + " landmarks in the correct position.";
+  els.summaryGrid.innerHTML =
+    '<div class="summary-box"><strong>' + score.correct + "/" + score.total + '</strong><span>Correct positions</span></div>' +
+    '<div class="summary-box"><strong>' + score.points + '</strong><span>Round points</span></div>' +
+    '<div class="summary-box"><strong>' + (score.perfect ? "+20" : "0") + '</strong><span>Perfect bonus</span></div>';
+}
+function showFinal() {
+  var first = state.scores[0] || { points: 0, correct: 0, total: state.route.length };
+  var second = state.scores[1] || { points: 0, correct: 0, total: state.route.length };
+  els.summaryPanel.classList.add("show");
+  els.summaryTitle.textContent = "Final score";
+  els.summaryCopy.textContent = "Round 1: Student A guided. Round 2: Student B guided.";
+  els.summaryGrid.innerHTML =
+    '<div class="summary-box"><strong>' + first.points + '</strong><span>Round 1 points</span></div>' +
+    '<div class="summary-box"><strong>' + second.points + '</strong><span>Round 2 points</span></div>' +
+    '<div class="summary-box"><strong>' + totalScore() + '</strong><span>Total score</span></div>';
+}
+function drawAll() {
+  var reveal = state.phase === "reveal" || state.phase === "final";
+  drawMap(guideCtx, true, false);
+  drawMap(playerCtx, reveal, true);
+}
+function drawMap(ctx, showCorrectRoute, showPlayerRoute) {
+  ctx.clearRect(0, 0, W, H);
+  drawBackground(ctx);
+  drawRoads(ctx);
+  drawRiver(ctx);
+  drawTrees(ctx);
+  state.landmarks.forEach(function(lm) { drawLandmark(ctx, lm); });
+  if (showCorrectRoute) drawRoute(ctx, state.route, "#c9483f", true, true);
+  if (showPlayerRoute && state.playerRoute.length) drawRoute(ctx, state.playerRoute, "#2f6f91", false, false);
+  drawCompass(ctx);
+}
+function drawBackground(ctx) {
+  ctx.fillStyle = "#efe5d4";
+  ctx.fillRect(0, 0, W, H);
+  ctx.strokeStyle = "rgba(181, 152, 131, 0.18)";
+  ctx.lineWidth = 1;
+  for (var x = 40; x < W; x += 80) {
+    wobbleLine(ctx, x, 0, x + 8, H, 8);
+  }
+  for (var y = 52; y < H; y += 82) {
+    wobbleLine(ctx, 0, y, W, y + 6, 8);
+  }
+}
+function drawRoads(ctx) {
+  var roads = [
+    [[50,170],[280,158],[520,180],[900,148]],
+    [[80,360],[300,316],[530,336],[890,360]],
+    [[80,578],[306,540],[560,560],[888,520]],
+    [[188,70],[210,260],[178,444],[140,650]],
+    [[456,60],[472,250],[448,430],[430,660]],
+    [[744,70],[706,260],[738,432],[790,650]]
+  ];
+  ctx.lineCap = "round";
+  roads.forEach(function(road) {
+    ctx.strokeStyle = "#d7c2a7";
+    ctx.lineWidth = 34;
+    drawPolyline(ctx, road, false);
+    ctx.strokeStyle = "rgba(47, 62, 70, 0.22)";
+    ctx.lineWidth = 2;
+    ctx.setLineDash([12, 12]);
+    drawPolyline(ctx, road, false);
+    ctx.setLineDash([]);
+  });
+}
+function drawRiver(ctx) {
+  ctx.save();
+  ctx.strokeStyle = "rgba(95, 124, 138, 0.55)";
+  ctx.lineWidth = 42;
+  ctx.lineCap = "round";
+  ctx.beginPath();
+  ctx.moveTo(918, 42);
+  ctx.bezierCurveTo(844, 158, 890, 226, 826, 340);
+  ctx.bezierCurveTo(770, 440, 890, 542, 822, 690);
+  ctx.stroke();
+  ctx.strokeStyle = "rgba(230, 238, 242, 0.75)";
+  ctx.lineWidth = 5;
+  ctx.setLineDash([18, 14]);
+  ctx.stroke();
+  ctx.restore();
+}
+function drawTrees(ctx) {
+  var pts = [[70,80],[112,230],[310,70],[590,76],[875,250],[84,460],[304,650],[612,640],[862,610],[546,454],[620,252]];
+  pts.forEach(function(p, i) {
+    ctx.fillStyle = i % 2 ? "#8fa78c" : "#6d9274";
+    ctx.beginPath();
+    ctx.arc(p[0], p[1], 17, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = "#8c684f";
+    ctx.fillRect(p[0] - 3, p[1] + 12, 6, 16);
+  });
+}
+function drawLandmark(ctx, lm) {
+  ctx.save();
+  ctx.translate(lm.x, lm.y);
+  ctx.shadowColor = "rgba(39, 35, 32, 0.16)";
+  ctx.shadowBlur = 8;
+  ctx.shadowOffsetY = 5;
+  ctx.fillStyle = lm.color;
+  ctx.strokeStyle = "#2f3e46";
+  ctx.lineWidth = 3;
+  roundedRect(ctx, -34, -30, 68, 52, 8);
+  ctx.fill();
+  ctx.shadowColor = "transparent";
+  ctx.stroke();
+  ctx.fillStyle = "#2f3e46";
+  ctx.beginPath();
+  ctx.moveTo(-42, -28);
+  ctx.lineTo(0, -58);
+  ctx.lineTo(42, -28);
+  ctx.closePath();
+  ctx.fill();
+  ctx.fillStyle = "#f9f3e6";
+  ctx.fillRect(-8, -3, 16, 25);
+  ctx.fillRect(-25, -18, 13, 12);
+  ctx.fillRect(12, -18, 13, 12);
+  ctx.font = "700 20px Manrope, sans-serif";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "top";
+  ctx.lineWidth = 5;
+  ctx.strokeStyle = "rgba(249, 243, 230, 0.92)";
+  ctx.strokeText(lm.name, 0, 35);
+  ctx.fillStyle = "#272320";
+  ctx.fillText(lm.name, 0, 35);
+  ctx.restore();
+}
+function drawRoute(ctx, route, color, dashed, numbered) {
+  if (route.length < 1) return;
+  ctx.save();
+  ctx.strokeStyle = color;
+  ctx.lineWidth = dashed ? 7 : 8;
+  ctx.lineCap = "round";
+  ctx.lineJoin = "round";
+  if (dashed) ctx.setLineDash([18, 12]);
+  ctx.beginPath();
+  ctx.moveTo(route[0].x, route[0].y);
+  for (var i = 1; i < route.length; i++) {
+    var a = route[i - 1];
+    var b = route[i];
+    var mx = (a.x + b.x) / 2;
+    var my = (a.y + b.y) / 2;
+    ctx.quadraticCurveTo(mx + Math.sin(i * 2.1) * 28, my + Math.cos(i * 1.7) * 22, b.x, b.y);
+  }
+  ctx.stroke();
+  ctx.setLineDash([]);
+  route.forEach(function(lm, i) {
+    ctx.fillStyle = color;
+    ctx.strokeStyle = "#f9f3e6";
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.arc(lm.x, lm.y - 58, numbered ? 18 : 13, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+    if (numbered) {
+      ctx.fillStyle = "#f9f3e6";
+      ctx.font = "800 18px Manrope, sans-serif";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText(String(i + 1), lm.x, lm.y - 58);
+    }
+  });
+  ctx.restore();
+}
+function drawCompass(ctx) {
+  ctx.save();
+  ctx.translate(70, 650);
+  ctx.fillStyle = "rgba(249, 243, 230, 0.75)";
+  ctx.strokeStyle = "rgba(47, 62, 70, 0.35)";
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.arc(0, 0, 38, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.stroke();
+  ctx.fillStyle = "#c9483f";
+  ctx.beginPath();
+  ctx.moveTo(0, -31);
+  ctx.lineTo(9, 0);
+  ctx.lineTo(0, -7);
+  ctx.lineTo(-9, 0);
+  ctx.closePath();
+  ctx.fill();
+  ctx.fillStyle = "#2f3e46";
+  ctx.font = "800 14px Manrope, sans-serif";
+  ctx.textAlign = "center";
+  ctx.fillText("N", 0, -45);
+  ctx.restore();
+}
+function drawPolyline(ctx, points) {
+  ctx.beginPath();
+  ctx.moveTo(points[0][0], points[0][1]);
+  for (var i = 1; i < points.length; i++) ctx.lineTo(points[i][0], points[i][1]);
+  ctx.stroke();
+}
+function wobbleLine(ctx, x1, y1, x2, y2, steps) {
+  ctx.beginPath();
+  ctx.moveTo(x1, y1);
+  for (var i = 1; i <= steps; i++) {
+    var t = i / steps;
+    ctx.lineTo(x1 + (x2 - x1) * t + Math.sin(t * 12) * 2, y1 + (y2 - y1) * t + Math.cos(t * 9) * 2);
+  }
+  ctx.stroke();
+}
+function roundedRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
+}
+function getCanvasPoint(canvas, event) {
+  var rect = canvas.getBoundingClientRect();
+  var scaleX = W / rect.width;
+  var scaleY = H / rect.height;
+  return { x: (event.clientX - rect.left) * scaleX, y: (event.clientY - rect.top) * scaleY };
+}
+function handlePlayerClick(event) {
+  if (state.phase !== "navigate") return;
+  if (state.playerRoute.length >= state.route.length) return;
+  var p = getCanvasPoint(els.playerCanvas, event);
+  var hit = null;
+  for (var i = 0; i < state.landmarks.length; i++) {
+    if (distance(p, state.landmarks[i]) < 58) hit = state.landmarks[i];
+  }
+  if (!hit) return;
+  state.playerRoute.push(hit);
+  beep(520 + state.playerRoute.length * 60, 0.06, "triangle");
+  if (state.playerRoute.length === state.route.length) {
+    setTimeout(revealRound, 220);
+  }
+  update();
+}
+function confetti() {
+  els.confetti.innerHTML = "";
+  for (var i = 0; i < 34; i++) {
+    var s = document.createElement("span");
+    s.style.left = Math.random() * 100 + "vw";
+    s.style.animationDelay = Math.random() * 260 + "ms";
+    s.style.background = ["#f2c66d", "#5f7c8a", "#b59883", "#8fa7b3", "#c9483f"][i % 5];
+    els.confetti.appendChild(s);
+  }
+  setTimeout(function(){ els.confetti.innerHTML = ""; }, 1500);
+}
+
+els.difficulty.addEventListener("change", startNewGame);
+els.newGameBtn.addEventListener("click", startNewGame);
+els.primaryAction.addEventListener("click", function() {
+  if (state.phase === "study") beginNavigate();
+  else if (state.phase === "navigate") revealRound();
+  else if (state.phase === "reveal" && state.round === 1) prepareNextRound();
+  else if (state.phase === "reveal" && state.round === 2) finishGame();
+  else if (state.phase === "final") startNewGame();
+});
+els.undoBtn.addEventListener("click", function() {
+  if (state.phase !== "navigate" || !state.playerRoute.length) return;
+  state.playerRoute.pop();
+  beep(240, 0.05, "sine");
+  update();
+});
+els.revealBtn.addEventListener("click", revealRound);
+els.playerCanvas.addEventListener("click", handlePlayerClick);
+window.addEventListener("resize", drawAll);
+
+startNewGame();
+</script>
+</body>
+</html>
